@@ -1,0 +1,11 @@
+node_modules
+dist
+out
+*.log*
+.vscode
+.idea
+build
+.pnmrc
+pnpm-lock.yaml
+.mp4
+
