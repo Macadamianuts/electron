@@ -3,12 +3,10 @@
 import router from "@renderer/router/index";
 import {
   Setting as SettingIcon,
-  CameraFive,
   InnerShadowTopLeft,
   RoundDistortion,
   RightOne,
   CameraThree,
-  Monitor,
   Pause,
   MonitorOff
 } from '@icon-park/vue-next'
@@ -22,9 +20,6 @@ const capturedPhoto = ref('');
 
 // 初始化音频
 onMounted(() => {
-  // 设置使用摄像头
-  config.useCamera = true
-
   // 获取video元素
   videoElement.value = document.getElementById('video') as HTMLVideoElement;
 
@@ -55,7 +50,6 @@ const quit = () => {
 
 // 关闭摄像头跳转页面
 const stopCamera = () => {
-  config.useCamera = false
   ElMessage({
     type: 'success',
     message: '已关闭摄像头',
@@ -94,6 +88,7 @@ const changRound = () => {
 
 // 去设置
 const goSetting = () => {
+  config.page = 'setting'
   router.push('/setting')
   return
 }
@@ -209,50 +204,26 @@ const createRecorder = (stream: MediaStream): MediaRecorder => {
   return recorder
 }
 
-
-
 </script>
 
 <template>
       <Suspense>
         <main class="relative group" @contextmenu="quit">
-          <section>
+          <section class="">
             <SettingIcon
               theme="outline"
               size="22"
-              class="absolute left-1/2 -translate-x-1/2 mt-3 text-white opacity-80 cursor-pointer z-10 hidden group-hover:block"
+              class="absolute left-1/2 -translate-x-1/2 hidden group-hover:block mt-3 text-white opacity-80 cursor-pointer z-10 "
               v-if="config.page == 'camera'"
               @click="goSetting"
               />
-              <!-- 相机 -->
-              <CameraFive
-              theme="outline"
-              size="22"
-              class="absolute left-1/2 -translate-x-1/2 mt-3 text-white opacity-80 cursor-pointer z-10 hidden group-hover:block"
-              v-if="config.page  == 'setting'"
-              @click="config.page  = 'camera'"
-              />
-              <!-- 圆形 -->
-              <InnerShadowTopLeft
-              theme="outline"
-              size="24"
-              class="absolute right-1/4 -translate-x-1/2 mt-3 bottom-3 text-[#f5a623]  cursor-pointer z-10 hidden group-hover:block"
-              v-if="config.page  == 'camera' && config.rounded == false"
-              @click="changRound"
-              />
-              <!-- 切换 -->
-              <RoundDistortion
-              theme="outline"
-              size="22"
-              class="absolute right-1/4 -translate-x-1/2 mt-3 bottom-3  text-[#f5a623] cursor-pointer z-10 hidden group-hover:block"
-              v-if="config.page  == 'camera' && config.rounded == true"
-              @click="config.rounded = !config.rounded"
-              />
+          </section>
+          <section class="absolute bottom-1 right-1  hidden group-hover:block z-20 text-[#f5a623]">
               <!-- 开始全屏录制 -->
               <RightOne
               theme="outline"
+              class=" inline-block ml-2 mt-2"
               size="28"
-              class="absolute left-1/3 -translate-x-1/2  mt-3 bottom-3 text-[#f5a623]  cursor-pointer z-10 hidden group-hover:block"
               v-if="flag === false"
               @click="onRecord"
               />
@@ -260,33 +231,41 @@ const createRecorder = (stream: MediaStream): MediaRecorder => {
               <Pause
               theme="outline"
               size="24"
-              class="absolute left-1/3 -translate-x-1/2  mt-3 bottom-3 text-[#f5a623]  cursor-pointer z-10 hidden group-hover:block"
+              class=" inline-block ml-2"
               v-if="flag === true"
               @click="onStop"
+              />
+              <!-- 关闭摄像头 -->
+              <MonitorOff
+              theme="outline"
+              class=" inline-block ml-2"
+              size="22"
+              v-if="config.page == 'camera'"
+              @click="stopCamera"
               />
               <!-- 拍照 -->
               <CameraThree
               theme="outline"
               size="26"
-              class="absolute right-1/4 -translate-x-1/2  mt-3 bottom-12 text-[#f5a623] cursor-pointer z-10 hidden group-hover:block"
+              class=" inline-block ml-2"
               v-if="config.page == 'camera'"
               @click="startDown"
               />
-              <!-- 开启摄像头 -->
-              <Monitor
+              <!-- 圆形 -->
+              <InnerShadowTopLeft
               theme="outline"
-              size="22"
-              class="absolute left-1/3 -translate-x-1/2  mt-3 bottom-12 text-[#f5a623]  cursor-pointer z-10 hidden group-hover:block"
-              v-if="config.page == 'camera' && config.useCamera == false"
-              @click="openCamera"
+              size="24"
+              class=" inline-block ml-2"
+              v-if="config.page  == 'camera' && config.rounded == false"
+              @click="changRound"
               />
-              <!-- 关闭摄像头 -->
-              <MonitorOff
+              <!-- 切换 -->
+              <RoundDistortion
               theme="outline"
-              class="absolute left-1/3 -translate-x-1/2  mt-3 bottom-12 text-[#f5a623]  cursor-pointer z-10 hidden group-hover:block"
               size="22"
-              v-if="config.page == 'camera' && config.useCamera == true"
-              @click="stopCamera"
+              class=" inline-block ml-2"
+              v-if="config.page  == 'camera' && config.rounded == true"
+              @click="config.rounded = !config.rounded"
               />
             </section>
             <section>

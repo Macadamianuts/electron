@@ -72,8 +72,9 @@ const openCamera = () => {
       type: 'success',
       duration: config.setTimeOut,
     });
-    router.push('/');
   }
+  router.push('/');
+  return
 };
 
 const close = () => {

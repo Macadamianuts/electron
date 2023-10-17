@@ -33,6 +33,7 @@ onMounted(async () => {
 })
 
 const goBack = () => {
+  config.page = 'camera'
   return router.push('/')
 }
 </script>

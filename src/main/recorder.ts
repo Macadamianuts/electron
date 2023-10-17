@@ -1,4 +1,4 @@
-const { ipcMain, desktopCapturer, dialog, screen } = require('electron')
+const { ipcMain, desktopCapturer, dialog} = require('electron')
 const fs = require('fs')
 const ffmpeg = require('fluent-ffmpeg')
 
