@@ -68,6 +68,8 @@ const stopCamera = () => {
 // 倒计时设置
 const count = ref(3)
 const countFlag = ref(false)
+const videoDom = ref<any>()
+const flag = ref<boolean>(false)
 
 // 开启倒计时
 const startDown = () => {
@@ -122,15 +124,91 @@ const savePhoto = () => {
 };
 
 // 全屏录屏功能
+const recording = ref<boolean>(false) // 是否录制
+let recorder: MediaRecorder | null = null // 媒体录制容器
 
 
-// 开始录屏
+// 屏幕流
+const handleVideoStream = async () =>{
+  const sourceId: string = await window.api.startRecord()
+  const stream: MediaStream = await getStream(sourceId)
 
-// 暂停录屏
+  videoDom.value = stream
+}
+handleVideoStream()
 
-// 继续录屏
+// 截屏
+const screenShot = () => {
+  window.api.screenshot()
+}
 
-// 结束录屏
+// 开始/暂停/继续
+const onRecord = async () => {
+  if (recording.value) {
+    // 正在录制
+    recording.value = false
+  } else {
+    if (!recorder) {
+      // 未开始录制
+      const sourceId: string = await window.api.startRecord()
+      // 录屏流
+      const stream: MediaStream = await getStream(sourceId)
+      recorder = createRecorder(stream)
+    } else {
+      // 已暂停，点击继续
+      recorder.resume()
+    }
+    recording.value = false
+  }
+}
+
+// 停止
+const onStop = () => {
+  if (recorder) {
+    recorder.stop()
+    recorder = null
+  }
+  recording.value = false
+}
+
+// 获取音频流
+const getStream = async (sourceId: string): Promise<MediaStream> => {
+  const stream = await navigator.mediaDevices.getUserMedia(<MediaStreamConstraints>{
+    audio: {
+      mandatory: {
+        chromeMediaSource: 'desktop'
+      }
+    },
+    video: {
+      mandatory: {
+        chromeMediaSource: 'desktop',
+        chromeMediaSourceId: sourceId
+      }
+    }
+  })
+  return stream
+}
+
+// 创建媒体录制器
+const createRecorder = (stream: MediaStream): MediaRecorder => {
+  const recorder = new MediaRecorder(stream)
+  recorder.start()
+  recorder.ondataavailable = e => {
+    const blob = new Blob([e.data], {
+      type: 'video/mp4'
+    })
+    const reader = new FileReader()
+    reader.readAsArrayBuffer(blob)
+    reader.onload = () => {
+      const arrayBuffer = reader.result
+      const data = new DataView(<ArrayBuffer>arrayBuffer)
+      // @ts-ignore
+      window.api.stopRecord(data)
+    }
+  }
+  return recorder
+}
+
 
 
 </script>
@@ -175,16 +253,16 @@ const savePhoto = () => {
               theme="outline"
               size="28"
               class="absolute left-1/3 -translate-x-1/2  mt-3 bottom-3 text-[#f5a623]  cursor-pointer z-10 hidden group-hover:block"
-              v-if="config.page == 'camera' && config.begin == false"
-              @click="config.begin = !config.begin"
+              v-if="flag === false"
+              @click="onRecord"
               />
               <!-- 暂停录制 -->
               <Pause
               theme="outline"
               size="24"
               class="absolute left-1/3 -translate-x-1/2  mt-3 bottom-3 text-[#f5a623]  cursor-pointer z-10 hidden group-hover:block"
-              v-if="config.page == 'camera' && config.begin == true"
-              @click="config.begin =!config.begin"
+              v-if="flag === true"
+              @click="onStop"
               />
               <!-- 拍照 -->
               <CameraThree

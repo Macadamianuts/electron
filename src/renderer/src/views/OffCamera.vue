@@ -83,8 +83,7 @@ const close = () => {
 const handleVideoStream = async () =>{
   const sourceId: string = await window.api.startRecord()
   const stream: MediaStream = await getStream(sourceId)
-  const video = document.querySelector('#video-box')
-  
+
   videoDom.value = stream
 }
 handleVideoStream()
