@@ -133,9 +133,9 @@ const handleVideoStream = async () =>{
 handleVideoStream()
 
 // 截屏
-const screenShot = () => {
-  window.api.screenshot()
-}
+// const screenShot = () => {
+//   window.api.screenshot()
+// }
 
 // 开始/暂停/继续
 const onRecord = async () => {

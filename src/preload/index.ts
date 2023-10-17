@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer, dialog } from 'electron'
+import { contextBridge, ipcRenderer,dialog } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 // Custom APIs for renderer
 const api = {
@@ -23,8 +23,8 @@ const api = {
     ipcRenderer.send('savePhoto', opt)
   },
   // 照片保存到本地
-  photoSaved: (filePath: String) => {
-    ipcRenderer.on('photo-saved', (event, filePath) => {
+  photoSaved: () => {
+    ipcRenderer.on('photo-saved', (_ , filePath) => {
       if (filePath) {
         console.log('照片已保存至：', filePath)
         // 在这里可以处理照片保存成功的逻辑，例如显示成功消息、展示保存的照片路径等
@@ -48,7 +48,7 @@ const api = {
   },
   // 录屏
   startRecord: () => ipcRenderer.invoke('rendererInvoke:startRecord'), // 开始录屏
-  stopRecord: (data) => ipcRenderer.invoke('rendererInvoke:stopRecord', data), // 结束录屏
+  stopRecord: (data:any) => ipcRenderer.invoke('rendererInvoke:stopRecord', data), // 结束录屏
   screenshot: () => ipcRenderer.invoke('rendererInvoke:screenshot'), // 截屏
   getScreenSize: () => ipcRenderer.invoke('rendererInvoke:getScreenSize')
 }

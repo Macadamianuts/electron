@@ -14,7 +14,7 @@ ipcMain.on('quit', () => {
   menu.popup()
 })
 // 监听渲染进程发送的保存照片消息
-ipcMain.on('savePhoto', async (event, imgData: String) => {
+ipcMain.on('savePhoto', async (_, imgData: String) => {
   try {
     let base64 = imgData.replace(/^data:image\/\w+;base64,/, '')
     let dataBuffer = Buffer.from(base64, 'base64')

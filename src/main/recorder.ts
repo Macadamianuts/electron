@@ -1,10 +1,10 @@
-const { ipcMain, desktopCapturer, dialog} = require('electron')
+// const { ipcMain, desktopCapturer, dialog} = require('electron')
+import { ipcMain, screen, desktopCapturer, dialog } from "electron"
 const fs = require('fs')
-const ffmpeg = require('fluent-ffmpeg')
 
 ipcMain.handle('rendererInvoke:startRecord', handleStartRecord) // 开始录屏
 ipcMain.handle('rendererInvoke:screenshot', () => handlerScreenshot()) // 截图
-ipcMain.handle('rendererInvoke:stopRecord', (event, data) => handleStopRecord(data)) // 结束录屏
+ipcMain.handle('rendererInvoke:stopRecord', (_, data) => handleStopRecord(data)) // 结束录屏
 ipcMain.handle('rendererInvoke:getScreenSize', getScreenSize)
 // 开始录屏
 async function handleStartRecord() {

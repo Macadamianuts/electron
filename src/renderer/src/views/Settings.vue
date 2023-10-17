@@ -20,12 +20,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, Ref } from 'vue'
 import router from '../router/index'
 import { useConfigStore } from '@renderer/stores/useConfigStore';
 const { config, updateConfig } = useConfigStore()
 
-const cameras = ref([])
+interface MediaDeviceInfo {
+  deviceId: string;
+  kind: string;
+  label: string;
+}
+
+const cameras: Ref<MediaDeviceInfo[]> = ref([])
+
 onMounted(async () => {
   // 获取用户硬件装备
   const devices = await navigator.mediaDevices.enumerateDevices()
