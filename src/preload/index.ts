@@ -49,7 +49,8 @@ const api = {
   // 录屏
   startRecord: () => ipcRenderer.invoke('rendererInvoke:startRecord'), // 开始录屏
   stopRecord: (data) => ipcRenderer.invoke('rendererInvoke:stopRecord', data), // 结束录屏
-  screenshot: () => ipcRenderer.invoke('rendererInvoke:screenshot') // 截屏
+  screenshot: () => ipcRenderer.invoke('rendererInvoke:screenshot'), // 截屏
+  getScreenSize: () => ipcRenderer.invoke('rendererInvoke:getScreenSize')
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

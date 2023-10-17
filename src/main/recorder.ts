@@ -5,7 +5,7 @@ const ffmpeg = require('fluent-ffmpeg')
 ipcMain.handle('rendererInvoke:startRecord', handleStartRecord) // 开始录屏
 ipcMain.handle('rendererInvoke:screenshot', () => handlerScreenshot()) // 截图
 ipcMain.handle('rendererInvoke:stopRecord', (event, data) => handleStopRecord(data)) // 结束录屏
-
+ipcMain.handle('rendererInvoke:getScreenSize', getScreenSize)
 // 开始录屏
 async function handleStartRecord() {
   // 捕获屏幕
@@ -81,3 +81,17 @@ async function handlerScreenshot() {
     return null
   }
 }
+
+function getScreenSize():object {
+  const { width, height } = screen.getPrimaryDisplay().workAreaSize
+  let options: Object = {
+    width,
+    height
+  }
+  return options
+}
+
+
+
+
+
