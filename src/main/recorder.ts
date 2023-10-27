@@ -6,6 +6,7 @@ ipcMain.handle('rendererInvoke:startRecord', handleStartRecord) // 开始录屏
 ipcMain.handle('rendererInvoke:screenshot', () => handlerScreenshot()) // 截图
 ipcMain.handle('rendererInvoke:stopRecord', (_, data) => handleStopRecord(data)) // 结束录屏
 ipcMain.handle('rendererInvoke:getScreenSize', getScreenSize)
+ipcMain.handle('rendererInvoke:getScreenStream', getScreenStream)
 // 开始录屏
 async function handleStartRecord() {
   // 捕获屏幕
@@ -92,6 +93,41 @@ function getScreenSize():object {
 }
 
 
+type CustomMediaStreamConstraints = {
+  video: {
+    mandatory: {
+      chromeMediaSource: string;
+      chromeMediaSourceId: string;
+    };
+  };
+};
 
+// 授权获取屏幕流
+async function getScreenStream() {
+  window.navigator.mediaDevices.getDisplayMedia = async function () {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const sources = await desktopCapturer.getSources({ types: ['screen'] })
+      if (sources.length === 0) {
+        reject(new Error('No available screen to capture'))
+        return
+      }
 
+      const constraints: CustomMediaStreamConstraints = {
+        video: {
+          mandatory: {
+            chromeMediaSource: 'desktop',
+            chromeMediaSourceId: sources[0].id,
+          }
+        }
+      }
+
+      const stream = await navigator.mediaDevices.getUserMedia(constraints as MediaStreamConstraints)
+      resolve(stream)
+    } catch (err) {
+      reject(err)
+    }
+  })
+}
+}
 

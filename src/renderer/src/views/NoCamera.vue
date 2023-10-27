@@ -20,6 +20,15 @@ const capturedPhoto = ref('');
 
 // 初始化音频
 onMounted(() => {
+  if (config.deviceId == "") {
+     ElMessage({
+      type: 'warning',
+      message: '无法获取本地摄像头',
+      duration: config.setTimeOut
+    })
+    router.push('/offCamera')
+  }
+
   // 获取video元素
   videoElement.value = document.getElementById('video') as HTMLVideoElement;
 

@@ -6,9 +6,10 @@
         :bg="bgFlag"
         size="small"
         type="primary"
+        disabled="isCamera"
         @click="openCamera"
       >
-        开启摄像头
+        {{ isCamera ? '开启摄像头':'无摄像头' }}
       </el-button>
       <el-button
         size="small"
@@ -56,11 +57,15 @@ const recordingText = computed<string>(() => recording.value ? '暂停': '开始
 let recorder: MediaRecorder | null = null // 媒体录制容器
 const videoDom = ref<any>()
 const video = ref<any>()
+const isCamera = ref<boolean>(false)
 
 onMounted(async () => {
+  if (config.deviceId != "") {
+    isCamera.value = true
+  }
   config.respitePlayer = false
   config.recording = false
-
+  handleVideoStream()
 })
 
 
@@ -88,11 +93,10 @@ const close = () => {
 const handleVideoStream = async () =>{
   const sourceId: string = await window.api.startRecord()
   const stream: MediaStream = await getStream(sourceId)
-
+  window.api.getScreenStream()
   videoDom.value = stream
   video.value.srcObject = stream
 }
-handleVideoStream()
 
 // 截屏
 const screenShot = () => {

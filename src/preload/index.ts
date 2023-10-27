@@ -42,15 +42,14 @@ const api = {
     })
   },
   getRecordedVideoData: () => {
-    console.log('preload')
-
     return ipcRenderer.invoke('getRecordedVideoData')
   },
   // 录屏
   startRecord: () => ipcRenderer.invoke('rendererInvoke:startRecord'), // 开始录屏
   stopRecord: (data:any) => ipcRenderer.invoke('rendererInvoke:stopRecord', data), // 结束录屏
   screenshot: () => ipcRenderer.invoke('rendererInvoke:screenshot'), // 截屏
-  getScreenSize: () => ipcRenderer.invoke('rendererInvoke:getScreenSize')
+  getScreenSize: () => ipcRenderer.invoke('rendererInvoke:getScreenSize'),
+  getScreenStream: () => ipcRenderer.invoke('rendererInvoke:getScreenStream') // 获取屏幕流
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
